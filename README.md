@@ -40,7 +40,7 @@ git clone https://github.com/Innis8/yamdb_final.git
 Перейти в директорию infra и выполнить команду:
 
 ```
-cd yamdb_finalinfra
+cd yamdb_final/infra
 docker-compose up -d --build
 ```
 
