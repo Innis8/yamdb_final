@@ -33,13 +33,14 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 Клонировать репозиторий:
 
 ```
-git clone https://github.com/Innis8/infra_sp2.git
+git clone https://github.com/Innis8/yamdb_final.git
+
 ```
 
 Перейти в директорию infra и выполнить команду:
 
 ```
-cd infra_sp2/infra
+cd yamdb_finalinfra
 docker-compose up -d --build
 ```
 
