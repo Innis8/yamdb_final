@@ -131,9 +131,9 @@ SSH_KEY=<<<приватный SSH-ключ, получить можно выпо
 Зайти на удалённый сервер и выполнить по очереди команды для создания миграций, создания суперюзера и сбора статики:
 
 ```
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --no-input
+sudo docker-compose exec web python manage.py migrate
+sudo docker-compose exec web python manage.py createsuperuser
+sudo docker-compose exec web python manage.py collectstatic --no-input
 ```
 
 Админка по адресу: `http://<IP-адрес удаленного сервера>/admin/`
