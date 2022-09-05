@@ -10,7 +10,17 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='h47xq==z$+uljw^pr=90q2oj3oc4*qelj0
 
 DEBUG = False
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+# To avoid AttributeError: 'NoneType' object has no attribute 'split'
+# By default, os.environ.get and os.getenv will return None if the environment
+# variable is not defined. In that case, python will try to call None.split()
+# which does not exist. Setting the second argument to an empty string ensures
+# we run .split() on a string rather than None
+
+# However, if the environment variable ALLOWED_HOSTS was not set, we don't want
+# the pythonic ALLOWED_HOSTS to be [""], so we set it to an empty string if all
+# the string it contains are empty.
+ALLOWED_HOSTS = [] if not any(ALLOWED_HOSTS) else ALLOWED_HOSTS
 
 INSTALLED_APPS = [
     'django.contrib.admin',
