@@ -2,11 +2,6 @@
 
 ![Status of workflow runs triggered by the push event](https://github.com/innis8/yamdb_final/actions/workflows/yamdb_workflow.yml/badge.svg?event=push)
 
-Авторы:
-- matsabaleuski
-- Innis8
-- Serge561
-
 ## Описание
 
 Проект YaMDb, а также REST API сервис для него.
@@ -16,10 +11,34 @@
 - Оставлять отзывы к произведению.
 - Оставлять комментарии к отзывам.
 
-Часть сервисов доступна только после авторизации по JWT-токену.
+Часть сервисов доступна только после авторизации по JWT-токену. Смотреть в общей документации по адресу:
+`http://<your remote server>/redoc/`
+
 
 ***
-#### Предстартовые настройки
+## Workflow
+Запускается при пуше в ветку `master`, не запускается, если в коммите была лишь правка файла `README.md`
+
+Состоит из следующих шагов:
+
+|Шаг|Что делает|
+| - |
+| tests | Установка зависимостей, запуск тестов flake8 и pytest |
+| build_and_push_to_docker_hub | Сборка образа и отправка в свой репозиторий на DockerHub |
+| deploy | Разворачивание проекта на удалённом сервере |
+| send_message | Отправка уведомления в телеграм-чат при успешном прохождении workflow в GitHub Actions |
+
+***
+### Подготовка и запуск проекта в Docker
+
+Клонировать репозиторий:
+
+```
+git clone https://github.com/Innis8/yamdb_final.git
+
+```
+
+***
 Файл переменных окружения infra/.env_example нужно переименовать в .env и поместить туда необходимую информацию:
 - секретный ключ Django SECTRET_KEY, использующийся для хеширования и криптографических подписей. Сгенерировать свой ключ можно, например, на сайте https://djecrety.ir/ либо выполнив в терминале команду:
 ```
@@ -31,26 +50,85 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 
 - разместить настроенный файл infra/.env на удаленный сервер в home/<ваш_username>/.env
 
-- скопировать файлы infra_sp2/docker-compose.yaml и infra_sp2/nginx/default.conf из проекта на удаленный сервер в home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно
+***
+Пример заполнения infra/.env
+```
+SECRET_KEY=YOUR_SECRET_KEY_FROM_SETTINGS.PY
+
+# ./infra/.env 
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=<<<пароль для БД>>>
+DB_HOST=db
+DB_PORT=5432
+ALLOWED_HOSTS=12.0.0.1,localhost,other_hosts(через запятую без пробелов)
+```
 
 ***
-### Запуск проекта в Docker
-
-Клонировать репозиторий:
-
-```
-git clone https://github.com/Innis8/yamdb_final.git
+### Установка на удаленном сервере (Ubuntu):
+1\. Войти на свой удалённый сервер:
 
 ```
-
-Перейти в директорию infra и выполнить команду:
-
-```
-cd yamdb_final/infra
-docker-compose up -d --build
+ssh <your_login>@<ip_address>
 ```
 
-Выполнить по очереди команды для создания миграций, создания суперюзера и сбора статики:
+2\. Установить Docker на удалённый сервер:
+
+```
+sudo apt install docker.io
+```
+
+3\. Установить docker-compose на удалённый сервер:
+ - Проверить, какая последняя версия доступна на [странице релизов](https://github.com/docker/compose/releases 'https://github.com/docker/compose/releases'). На момент написания настоящего документа наиболее актуальной стабильной версией является v2.10.2
+ - Следующая команда загружает версию 1.26.0 и сохраняет исполняемый файл в каталоге `/usr/local/bin/docker-compose`, в результате чего данное программное обеспечение будет глобально доступно под именем `docker-compose`:
+
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+- Затем необходимо задать правильные разрешения, чтобы сделать команду docker-compose исполняемой:
+
+```
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+- Чтобы проверить успешность установки, запустить следующую команду:
+
+```
+docker-compose --version
+```
+
+- Вывод будет выглядеть следующим образом:
+
+```
+Docker Compose version v2.10.2
+```
+
+4\. Скопировать файлы `infra/.env`, `infra/docker-compose.yaml` и `infra/nginx/default.conf` из проекта на удаленный сервер в `home/<ваш_username>/docker-compose.yaml` и `home/<ваш_username>/nginx/default.conf` соответственно. Сделать это можно при помощи сторонней программы, например, WinSCP, либо выполнив следующую команду из корневой папки проекта:
+
+```
+scp infra/.env <username>@<host>:/home/<username>/infra/.env
+scp infra/docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yml
+scp -r infra/nginx/ <username>@<host>:/home/<username>/
+```
+
+5\. Добавить переменные окружения в Secrets на GitHub:
+
+```
+DOCKER_USERNAME=<<<<<<имя пользователя DockerHub>>>
+DOCKER_PASSWORD=<<<пароль DockerHub>>>
+USER_YACLOUD=<<<имя пользователя удалённого сервера>>>
+HOST_YACLOUD=<<<IP-адрес удалённого сервера>>>
+TELEGRAM_TO=<<<ID своего телеграм-аккаунта>>>
+TELEGRAM_TOKEN=<<<токен своего бота>>>
+SSH_KEY=<<<приватный SSH-ключ, получить можно выполнив команду на локальной машине: cat ~/.ssh/id_rsa>>>
+```
+
+***
+### После деплоя
+
+Зайти на удалённый сервер и выполнить по очереди команды для создания миграций, создания суперюзера и сбора статики:
 
 ```
 docker-compose exec web python manage.py migrate
@@ -58,22 +136,15 @@ docker-compose exec web python manage.py createsuperuser
 docker-compose exec web python manage.py collectstatic --no-input
 ```
 
-Проект будет доступен по адресу: http://localhost/
-Админка по адресу: http://localhost/admin/
-Общая документация по адресу: http://localhost/redoc/
+Админка по адресу: `http://<IP-адрес удаленного сервера>/admin/`
+Либо, если зарегистрировано доменное имя): `http://<название сайта>/admin/`
+Общая документация по адресу: `http://<IP-адрес удаленного сервера>/redoc/`
+Либо, если зарегистрировано доменное имя: `http://<название сайта>/redoc/`
 
-В качестве примера рядом с manage.py лежит дамп БД с несколькими тестовыми записями.  
-Импортировать дамп в свежесозданную БД можно командой:
-
-
-```
-docker-compose exec web python manage.py loaddata fixtures.json
-
-```
 
 ***
 ### Остановка Docker
-
+Если команда не выполняется и в терминале говорится о недостатке прав, вставить перед командой `sudo`
 Для остановки контейнеров без их удаления выполнить команду:
 
 ```
@@ -896,3 +967,8 @@ PATCH /api/v1/users/{username}/
 ```
  DELETE /api/v1/users/{username}/
 ```
+
+Авторы:
+- matsabaleuski
+- Innis8
+- Serge561
