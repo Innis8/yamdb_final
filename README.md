@@ -27,6 +27,12 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 ```
 - информацию относительно PostgreSQL DB
 
+- список разрешенных хостов в виде host_1,host_2,host_n (через запятую, без пробелов)
+
+- разместить настроенный файл infra/.env на удаленный сервер в home/<ваш_username>/.env
+
+- скопировать файлы infra_sp2/docker-compose.yaml и infra_sp2/nginx/default.conf из проекта на удаленный сервер в home/<ваш_username>/docker-compose.yaml и home/<ваш_username>/nginx/default.conf соответственно
+
 ***
 ### Запуск проекта в Docker
 
@@ -52,8 +58,8 @@ docker-compose exec web python manage.py createsuperuser
 docker-compose exec web python manage.py collectstatic --no-input
 ```
 
-Проект будет доступен по адресу: http://localhost/  
-Админка по адресу: http://localhost/admin/  
+Проект будет доступен по адресу: http://localhost/
+Админка по адресу: http://localhost/admin/
 Общая документация по адресу: http://localhost/redoc/
 
 В качестве примера рядом с manage.py лежит дамп БД с несколькими тестовыми записями.  
