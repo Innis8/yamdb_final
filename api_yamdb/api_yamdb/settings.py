@@ -112,10 +112,6 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-REDOC_URL = '/redoc/'
-
-REDOC_ROOT = os.path.join(BASE_DIR, 'redoc')
-
 AUTH_USER_MODEL = 'users.User'
 
 SIMPLE_JWT = {
