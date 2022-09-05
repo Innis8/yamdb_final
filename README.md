@@ -968,6 +968,7 @@ PATCH /api/v1/users/{username}/
  DELETE /api/v1/users/{username}/
 ```
 
+***
 Авторы:
 - matsabaleuski
 - Innis8
