@@ -21,12 +21,13 @@
 
 Состоит из следующих шагов:
 
-|Шаг|Что делает|
-| - |
-| tests | Установка зависимостей, запуск тестов flake8 и pytest |
-| build_and_push_to_docker_hub | Сборка образа и отправка в свой репозиторий на DockerHub |
-| deploy | Разворачивание проекта на удалённом сервере |
-| send_message | Отправка уведомления в телеграм-чат при успешном прохождении workflow в GitHub Actions |
+`tests`: установка зависимостей, запуск тестов flake8 и pytest
+
+`build_and_push_to_docker_hub`: сборка образа и отправка в свой репозиторий на DockerHub
+
+`deploy`: разворачивание проекта на удалённом сервере
+
+`send_message`: отправка уведомления в телеграм-чат при успешном прохождении workflow в GitHub Actions
 
 ***
 ### Подготовка и запуск проекта в Docker
@@ -54,15 +55,13 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 Пример заполнения infra/.env
 ```
 SECRET_KEY=YOUR_SECRET_KEY_FROM_SETTINGS.PY
-
-# ./infra/.env 
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=<<<пароль для БД>>>
 DB_HOST=db
 DB_PORT=5432
-ALLOWED_HOSTS=host_1,host_2,host_N(через запятую без пробелов)(добавить также названия создаваемых докером контейнеров. Как минимум, контейнера web, создаваемого на базе папки api_yamdb)
+ALLOWED_HOSTS=host_1,host_2,host_N(через запятую без пробелов)(добавить также названия создаваемых докером контейнеров. Как минимум, контейнера backend, создаваемого на базе папки backend)
 ```
 
 ***
