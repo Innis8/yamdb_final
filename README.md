@@ -104,7 +104,7 @@ docker-compose --version
 Docker Compose version v2.10.2
 ```
 
-4\. Скопировать файлы `infra/.env`, `infra/docker-compose.yaml` и `infra/nginx/default.conf` из проекта на удаленный сервер в `home/<ваш_username>/docker-compose.yaml` и `home/<ваш_username>/nginx/default.conf` соответственно. Сделать это можно при помощи сторонней программы, например, WinSCP, либо выполнив следующую команду из корневой папки проекта:
+4\. Скопировать файлы `infra/.env`, `infra/docker-compose.yaml` и `infra/nginx/default.conf` из проекта на удаленный сервер в `home/<ваш_username>/.env`, `home/<ваш_username>/docker-compose.yaml` и `home/<ваш_username>/nginx/default.conf` соответственно. Сделать это можно при помощи сторонней программы, например, WinSCP, либо выполнив следующую команду из корневой папки проекта:
 
 ```
 scp infra/.env <username>@<host>:/home/<username>/infra/.env
