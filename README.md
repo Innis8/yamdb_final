@@ -80,7 +80,7 @@ sudo apt install docker.io
 
 3\. Установить docker-compose на удалённый сервер:
  - Проверить, какая последняя версия доступна на [странице релизов](https://github.com/docker/compose/releases 'https://github.com/docker/compose/releases'). На момент написания настоящего документа наиболее актуальной стабильной версией является v2.10.2
- - Следующая команда загружает версию 1.26.0 и сохраняет исполняемый файл в каталоге `/usr/local/bin/docker-compose`, в результате чего данное программное обеспечение будет глобально доступно под именем `docker-compose`:
+ - Следующая команда загружает версию 2.10.2 и сохраняет исполняемый файл в каталоге `/usr/local/bin/docker-compose`, в результате чего данное программное обеспечение будет глобально доступно под именем `docker-compose`:
 
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.10.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
